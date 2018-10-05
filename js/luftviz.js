@@ -164,13 +164,11 @@ luftviz.chart24hourMean = (function (d3, vega) {
                     yScales = specCopy.scales.filter(function (item) {
                         return item.name === 'y';
                     });
-                    console.log(yScales);
                     if (yScales.length > 0) {
                         yScales[0].domain = domain;
                     }
                 }
             }
-            console.log(specCopy);
 
             vegaTooltipOptions = createVegaTooltipOptions(valueField),
             view = new vega.View(vega.parse(specCopy))
@@ -238,6 +236,8 @@ luftviz.dayOfWeekCircular = (function (d3) {
 
                 var chart = circularHeatChart()
                     .accessor(function(d) {return d[valueField];})
+                    // TODO: change based on PM2.5 or PM10
+                    .domain([0, 50])
                     .segmentHeight(20)
                     .innerRadius(20)
                     .numSegments(24)
