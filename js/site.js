@@ -429,7 +429,7 @@ $(function () {
                     if (sensor.isActive) {
                         // Display chart
                         data = dataArgs.shift();
-                        console.log("ARG", maxValue, chartEl, data, valueField);
+//                        console.log("ARG", maxValue, chartEl, data, valueField);
                         luftviz.chart24hourMean.render(
                             chartEl,
                             data,

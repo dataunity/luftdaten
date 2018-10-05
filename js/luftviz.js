@@ -156,10 +156,21 @@ luftviz.chart24hourMean = (function (d3, vega) {
 
             if (options) {
                 if (options.domain) {
+                    let domain, yScales;
                     // TODO: Set Y axis domain
                     // TODO: Pass in benchmarks/limits so they can be factored in to domain
+                    domain = options.domain;
+                    domain[1] = Math.max(domain[1], euLimitPM2point5, euLimitPM10);
+                    yScales = specCopy.scales.filter(function (item) {
+                        return item.name === 'y';
+                    });
+                    console.log(yScales);
+                    if (yScales.length > 0) {
+                        yScales[0].domain = domain;
+                    }
                 }
             }
+            console.log(specCopy);
 
             vegaTooltipOptions = createVegaTooltipOptions(valueField),
             view = new vega.View(vega.parse(specCopy))
