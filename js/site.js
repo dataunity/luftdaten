@@ -326,7 +326,8 @@ $(function () {
                     date: date2,
                     isActive: sensorCode2 && date2
                 }
-            ];
+            ],
+            domain = [0, 50];
 
         // Populate drop downs
         $.each(sensors, function (i, sensor) {
@@ -352,6 +353,15 @@ $(function () {
                 $(chartEl).text('[Select sensor and date above]');
             }
         });
+
+        // Set the legend
+        luftviz.legendColorGradient.render(
+            '#day-of-week-legend',
+            domain,
+            'white',
+            'red'
+        );
+
 
         // Show the page itself.
         // (the render function hides all pages so we need to show the one we want).
