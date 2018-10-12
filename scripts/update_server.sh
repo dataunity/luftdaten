@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# *********** Example usage ***********
+
+# bash scripts/update_server.sh --identity_file ~/.ssh/bristol_approach_air_quality_id_rsa --dir ~/tmp/citizensensing/bristol-air-quality
+
 
 # ************* Arguments *************
 
@@ -91,31 +95,32 @@ if [ ! -f $python_exe ]; then \
     exit 1; \
 fi
 
-cd $script_dir
+# GitHub setup
+#git_cmd='git'
+#if [ -n "$identity_file" ]; then
+#    git_cmd="GIT_SSH_COMMAND=\"ssh -i $identity_file -F /dev/null\" git"
+#fi
+#echo "$git_cmd"
 
-$python_exe -c "print('hello')"
-
-#$python_exe download_data.py
-#$python_exe process_data.py
-
-# GitHub
-
-git_cmd='git'
-if [ -n "$identity_file" ]; then
-    git_cmd="GIT_SSH_COMMAND=\"ssh -i $identity_file -F /dev/null\" git"
+# Make sure project is up to date
+if [ -z "$identity_file" ]; then
+    git pull
+else
+    GIT_SSH_COMMAND="ssh -i $identity_file -F /dev/null" git pull
 fi
 
-echo "$git_cmd"
+# Process latest data
+cd $script_dir
+$python_exe download_data.py
+$python_exe process_data.py
 
+# Update the server
 data_files="$root_dir/data/luftdaten/aggregated/*"
-#$git_cmd add $data_files
-#$git_cmd commit -m "Add new data."
-#$git_cmd push origin master
+git add $data_files
+git commit -m "Add new data."
 
-#if [ -z "$identity_file" ]; then
-#    echo "Normal git push"
-#    #git push origin master
-#else
-#    echo "git push with identity $identity_file"
-#    #GIT_SSH_COMMAND="ssh -i $identity_file -F /dev/null" git push origin master
-#fi
+if [ -z "$identity_file" ]; then
+    git push origin master
+else
+    GIT_SSH_COMMAND="ssh -i $identity_file -F /dev/null" git push origin master
+fi
