@@ -14,8 +14,8 @@ if [[ ${PIPESTATUS[0]} -ne 4 ]]; then
     exit 1
 fi
 
-OPTIONS=dfo:r:v
-LONGOPTS=debug,force,output:,root:,verbose
+OPTIONS=vi:d:
+LONGOPTS=verbose,identity_file:,dir:
 
 # -use ! and PIPESTATUS to get exit code with errexit set
 # -temporarily store output to be able to check for errors
@@ -30,28 +30,22 @@ fi
 # read getopt’s output this way to handle the quoting right:
 eval set -- "$PARSED"
 
-d=y f=n v=n outFile=- r=..
+v=false identity_file='' root_dir=..
 # now enjoy the options in order and nicely split until we see --
 while true; do
     case "$1" in
-        -d|--debug)
-            d=y
-            shift
-            ;;
-        -f|--force)
-            f=y
-            shift
-            ;;
         -v|--verbose)
-            v=y
+            v=true
             shift
             ;;
-        -o|--output)
-            outFile="$2"
+        -i|--identity_file)
+            # The path to GitHub SSH private key file
+            identity_file="$2"
             shift 2
             ;;
-        -r|--root)
-            r="$2"
+        -d|--dir)
+            # The root directory to Luftdaten project
+            root_dir="$2"
             shift 2
             ;;
         --)
@@ -75,13 +69,16 @@ done
 
 # ************* Script *************
 
-root_dir="$r"
+root_dir="$root_dir"
 script_dir="${root_dir}/scripts"
 python_exe="${root_dir}/env/bin/python"
 
-echo "verbose: $v, force: $f, debug: $d, out: $outFile r: $r"
-echo "$root_dir $script_dir"
 
+
+if [ $v = "true" ]; then
+    echo "verbose: $v, root_dir: $root_dir, identity_file: $identity_file"
+    echo "Downloading latest data an updating the server..."
+fi
 
 #if [ ! -f "id_rsa" ]; then \
 #    echo "Missing private SSH key for syncing with GitHub (id_rsa)."; \
@@ -98,9 +95,27 @@ cd $script_dir
 
 $python_exe -c "print('hello')"
 
-bash dummy.sh
 #$python_exe download_data.py
 #$python_exe process_data.py
-# TODO: add files under data/luftdaten/aggregated
-# TODO: commit
-# TODO: push
+
+# GitHub
+
+git_cmd='git'
+if [ -n "$identity_file" ]; then
+    git_cmd="GIT_SSH_COMMAND=\"ssh -i $identity_file -F /dev/null\" git"
+fi
+
+echo "$git_cmd"
+
+data_files="$root_dir/data/luftdaten/aggregated/*"
+#$git_cmd add $data_files
+#$git_cmd commit -m "Add new data."
+#$git_cmd push origin master
+
+#if [ -z "$identity_file" ]; then
+#    echo "Normal git push"
+#    #git push origin master
+#else
+#    echo "git push with identity $identity_file"
+#    #GIT_SSH_COMMAND="ssh -i $identity_file -F /dev/null" git push origin master
+#fi
