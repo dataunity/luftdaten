@@ -17,7 +17,8 @@ from luftdaten.data import (
     get_luftdaten_aggregated_data_dir,
     get_existing_raw_luftdaten_filepaths,
 )
-from data import (
+from data.dataframe import (
+    add_month_year_columns,
     create_24_hour_means,
     create_hourly_means_by_weekday_and_hour,
 )
@@ -51,11 +52,6 @@ def load_luftdaten_sensor_data(luftdaten_raw_data_dir, sensor_code):
         )
     return data
 
-def _add_month_year_columns(data, datetime_field):
-    """Adds month and year columns to a DataFrame using a timestamp column."""
-    data['year'] = data[datetime_field].dt.year
-    data['month'] = data[datetime_field].dt.month
-    return data
 
 def _create_month_summary(month, filepath):
     """Dict summary of the information about a month's data."""
@@ -66,6 +62,7 @@ def _create_month_summary(month, filepath):
         'month_name': calendar.month_name[month],
         'path': summary_filepath
     }
+
 
 def write_24_hour_mean_aggregated_data_files(
     luftdaten_aggregated_data_dir,
@@ -82,9 +79,12 @@ def write_24_hour_mean_aggregated_data_files(
         date_column=datetime_field
     )
 
-    df_24_hour_means = _add_month_year_columns(df_24_hour_means, datetime_field)
+    df_24_hour_means = add_month_year_columns(df_24_hour_means, datetime_field)
     data_24_hour_by_yearmonth = df_24_hour_means.groupby(
-        [df_24_hour_means['year'], df_24_hour_means['month']]
+        [
+            df_24_hour_means['year'],
+            df_24_hour_means['month']
+        ]
     )
 
     years_to_months = defaultdict(list)
@@ -111,6 +111,7 @@ def write_24_hour_mean_aggregated_data_files(
 
     return years_to_months
 
+
 def write_aggregated_dayofweek_data_files(
     luftdaten_aggregated_data_dir,
     sensor_code,
@@ -120,7 +121,7 @@ def write_aggregated_dayofweek_data_files(
     data for a sensor.
 
     Produces aggregate output split out for each month."""
-    data = _add_month_year_columns(data, datetime_field)
+    data = add_month_year_columns(data, datetime_field)
 
     data_by_yearmonth = data.groupby([data['year'], data['month']])
     years_to_months = defaultdict(list)
@@ -172,6 +173,7 @@ def write_aggregated_dayofweek_data_files(
         years_to_months[year].append(month_info)
 
     return years_to_months
+
 
 if __name__ == '__main__':
     data_dir = os.path.join('..', 'data')
