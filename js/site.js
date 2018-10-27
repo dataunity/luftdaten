@@ -4,7 +4,7 @@
 // https://tutorialzine.com/2015/02/single-page-app-without-a-framework
 
 $(function () {
-    var defaultValueField = "P1",
+    var defaultValueField = "P2",
         euLimitPM10 = 50,
         euLimitPM2point5 = 25;
 
