@@ -203,7 +203,8 @@ luftviz.dayOfWeekCircular = (function (d3) {
         dateFormat = "%-d %b %y",
 
         // Private methods
-        render = function (el, dataUrl, valueField) {
+        render = function (el, dataUrl, valueField, limitValue) {
+            // limitValue is the EU air quality limit
             d3.csv(dataUrl, function(data) {
                 // Set data types
                 data.forEach(function(d) {
@@ -238,7 +239,7 @@ luftviz.dayOfWeekCircular = (function (d3) {
                 var chart = circularHeatChart()
                     .accessor(function(d) {return d[valueField];})
                     // TODO: change based on PM2.5 or PM10
-                    .domain([0, 50])
+                    .domain([0, limitValue])
                     .segmentHeight(20)
                     .innerRadius(20)
                     .numSegments(24)

@@ -42,6 +42,12 @@
 
 			<div class="day-of-week page">
 
+				<!-- Value field (PM10 or PM2.5) -->
+				<select id="value-field-day-of-week" class="particulate-choice">
+					<option value="P1">Particulate size: PM10</option>
+					<option value="P2">Particulate size: PM2.5</option>
+				</select>
+
 				<!-- Drop downs -->
 				<div class="row">
 					<div class="column">
@@ -92,12 +98,18 @@
 					<div id="info"></div>
 					<div id="day-of-week-legend"></div>
 				</div>
+
+				<div class="foot-notes">
+					<p>
+						Units: micrograms per metre cubed (µg/m3)
+						<br>
+						Source: <a href="http://archive.luftdaten.info/" target="_blank">http://archive.luftdaten.info/</a>
+					</p>
+				</div>
 			</div>
 
 			<div class="over-time page">
 				<!-- Value field (PM10 or PM2.5) -->
-				<!--<div id="value-over-time"></div>
-				<input type="hidden" id="value-field-over-time">-->
 				<select id="value-field-over-time" class="particulate-choice">
 					<option value="P1">Particulate size: PM10</option>
 					<option value="P2">Particulate size: PM2.5</option>
@@ -140,10 +152,10 @@
 				<!-- Charts -->
 				<div class="row">
 					<div class="column">
-						<div id="twentyfour-hour-means-chart-1"></div>
+						<div class="twentyfour-hour-means" id="twentyfour-hour-means-chart-1"></div>
 					</div>
 					<div class="column">
-						<div id="twentyfour-hour-means-chart-2"></div>
+						<div class="twentyfour-hour-means" id="twentyfour-hour-means-chart-2"></div>
 					</div>
 				</div>
 
@@ -152,9 +164,6 @@
 						Units: micrograms per metre cubed (µg/m3)
 						<br>
 						Source: <a href="http://archive.luftdaten.info/" target="_blank">http://archive.luftdaten.info/</a>
-					</p>
-					<p>
-
 					</p>
 				</div>
 			</div>
