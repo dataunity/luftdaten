@@ -5,7 +5,7 @@ luftviz.chart24hourMean = (function (d3, vega) {
     var dateField = "timestamp",
         dateFormat = "%-d %b %y",
         euLimitPM10 = 50,
-        euLimitPM2point5 = 50,
+        euLimitPM2point5 = 25,
 
         createVegaTooltipOptions = function (valField) {
             return {
@@ -27,7 +27,7 @@ luftviz.chart24hourMean = (function (d3, vega) {
         },
 
         // Private methods
-        createSpec = function (data, valField, dateField) {
+        createSpec = function (data, valField, dateField, limitValue) {
             // Creates a vega spec
             var minMaxDates, minDate, maxDate, limitValues;
 
@@ -40,11 +40,11 @@ luftviz.chart24hourMean = (function (d3, vega) {
             limitValues = [
                 {
                     "date": minDate,
-                    "value": euLimitPM10
+                    "value": limitValue
                 },
                 {
                     "date": maxDate,
-                    "value": euLimitPM10
+                    "value": limitValue
                 }
             ];
 
@@ -150,7 +150,8 @@ luftviz.chart24hourMean = (function (d3, vega) {
             return spec;
         },
         render = function (el, data, valueField, options) {
-            var specCopy = createSpec(data, valueField, dateField),
+            var limitValue = valueField == "P1" ? euLimitPM10 : euLimitPM2point5,
+                specCopy = createSpec(data, valueField, dateField, limitValue),
                 vegaTooltipOptions,
                 view;
 
@@ -160,7 +161,7 @@ luftviz.chart24hourMean = (function (d3, vega) {
                     // TODO: Set Y axis domain
                     // TODO: Pass in benchmarks/limits so they can be factored in to domain
                     domain = options.domain;
-                    domain[1] = Math.max(domain[1], euLimitPM2point5, euLimitPM10);
+                    domain[1] = Math.max(domain[1], limitValue);
                     yScales = specCopy.scales.filter(function (item) {
                         return item.name === 'y';
                     });

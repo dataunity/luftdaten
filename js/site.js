@@ -5,13 +5,14 @@
 
 $(function () {
 
-    function getSensorsHashFragment (elSensor1, elDate1, elSensor2, elDate2) {
+    function getSensorsHashFragment (elSensor1, elDate1, elSensor2, elDate2, elValueField) {
         // Get url type hash fragment to represent current
         // sensor selection state
         return "sensor1=" + $(elSensor1).val() +
             "&date1=" + $(elDate1).val() +
             "&sensor2=" + $(elSensor2).val() +
-            "&date2=" + $(elDate2).val();
+            "&date2=" + $(elDate2).val() +
+            "&valueField=" + $(elValueField).val() || "P1";
     }
 
     function getDayOfWeekSensorsHashFragment () {
@@ -33,6 +34,7 @@ $(function () {
             '#sensor-date-over-time-1',
             '#sensor-code-over-time-2',
             '#sensor-date-over-time-2',
+            '#value-field-over-time'
         );
     }
 
@@ -92,7 +94,8 @@ $(function () {
 
         $(
             '#sensor-code-over-time-1, #sensor-date-over-time-1, ' +
-            '#sensor-code-over-time-2, #sensor-date-over-time-2'
+            '#sensor-code-over-time-2, #sensor-date-over-time-2, ' +
+            '#value-field-over-time'
         ).change(function () {
             let hashFragment = getOverTimeSensorsHashFragment();
             window.location.hash = 'overtime/' + hashFragment;
@@ -385,6 +388,10 @@ $(function () {
                     isActive: sensorCode2 && date2
                 }
             ];
+
+        // Value field
+//        $('#value-over-time').text("PM" + valueField == "P1" ? "10" : "2.5");
+        $('#value-field-over-time').val(valueField);
 
         // Populate drop downs
         $.each(sensors, function (i, sensor) {
